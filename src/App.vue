@@ -1,10 +1,13 @@
 <script setup>
  import {ref} from "vue" 
 
- let todos= ref(["A", "B", "C"]) 
+ let todos= ref([]) 
  let newtodo= ref("") 
  function popUpTodo () {
-  todos.value.push(newtodo.value) 
+  todos.value.push({
+    text: newtodo.value, 
+    complete: false 
+  })
 
   newtodo.value=""
 
@@ -19,9 +22,10 @@
   <h1>My Todo List</h1> 
   <ul>
   <li v-for="(todo, index) in todos"> 
+    <input type="checkbox" v-model="todo.complete">
     <button @click="deleteTodo(index)">🗑</button> 
-    {{ index }}
-  {{ todo }} 
+
+  {{ todo.text }} 
   </li> 
   </ul> 
   <input v-model="newtodo" @keydown.enter="popUpTodo">
@@ -32,7 +36,7 @@
 body{
   background-color: bisque; 
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; 
-  
+
 
 }
 

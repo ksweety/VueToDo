@@ -1,7 +1,7 @@
 <script setup>
  import {ref, watch} from "vue" 
 
- let todos= ref(JSON.parse(window.localStorage.getItem("todos"))) 
+ let todos= ref(JSON.parse(window.localStorage.getItem("todos")) ?? [])
 
   watch(todos,function(value) {
     window.localStorage.setItem("todos",JSON.stringify(value))
@@ -27,12 +27,14 @@
 
 <template>
   <h1>My Todo List</h1>  
-  <ul>
-  <li v-for="(todo, index) in todos"> 
+  <ul class="dripster">
+  <li v-for="(todo, index) in todos" :class="{completed: todo.complete}"> 
     <label class="container"><input type="checkbox" v-model="todo.complete"><span class="checkmark"></span></label>
     <button @click="deleteTodo(index)">🗑</button> 
 
   {{ todo.text }} 
+
+  <button @click="deleteTodo()">🗑</button>
   </li> 
   </ul> 
   <input v-model="newtodo" @keydown.enter="popUpTodo">
@@ -40,9 +42,11 @@
 </template>
 
 <style> 
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+
 body{
   background-color: bisque; 
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; 
+  font-family: 'Shadows Into Light', cursive; 
 
 
 }
@@ -112,6 +116,14 @@ body{
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+} 
+.completed {
+  text-decoration: line-through; 
+  color:#ccc
+} 
+.dripster {
+  background-color: beige; 
+  border-radius: 200px;
 }
 
 </style>

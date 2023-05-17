@@ -1,11 +1,26 @@
-<script setup>
- import {ref, watch} from "vue" 
+<script setup> 
+import {ref, watch} from "vue" 
+ let filter=ref("all")
+ 
 
  let todos= ref(JSON.parse(window.localStorage.getItem("todos")) ?? [])
 
   watch(todos,function(value) {
     window.localStorage.setItem("todos",JSON.stringify(value))
-  }, {deep:true})
+  }, {deep:true}) 
+
+  function todoFilter (todo) {
+    if(filter.value=="active") {
+      return todo.complete== false
+
+    }
+    else if(filter.value=="completed") {
+      return todo.complete== true
+    }
+    else {
+      return true
+    }
+  }
 
  let newtodo= ref("")
  
@@ -25,20 +40,27 @@
  }
 </script>
 
-<template>
+<template> 
+  <input name="filter" type="radio" value="all" v-model="filter"> 
+  <label>All</label>
+  <input name="filter" type="radio" value="active" v-model="filter">
+ <label>Active</label> 
+ <input name="filter"  type="radio" value="completed" v-model="filter">
+ <label>Completed</label>
   <h1>My Todo List</h1>  
   <ul class="dripster">
-  <li v-for="(todo, index) in todos" :class="{completed: todo.complete}"> 
+  <li v-for="(todo, index) in todos.filter(todoFilter)">
     <label class="container"><input type="checkbox" v-model="todo.complete"><span class="checkmark"></span></label>
+    
     <button @click="deleteTodo(index)">🗑</button> 
 
-  {{ todo.text }} 
+    <span :class="{completed: todo.complete}">{{ todo.text }}</span>
 
   <button @click="deleteTodo()">🗑</button>
   </li> 
   </ul> 
-  <input v-model="newtodo" @keydown.enter="popUpTodo">
-  <button @click="popUpTodo">Add Todo</button>
+  <input v-model="newtodo" class="button " @keydown.enter="popUpTodo">
+  <button @click="popUpTodo" class="button">Add Todo</button>
 </template>
 
 <style> 
@@ -46,7 +68,7 @@
 
 body{
   background-color: bisque; 
-  font-family: 'Shadows Into Light', cursive; 
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; 
 
 
 }
@@ -124,6 +146,18 @@ body{
 .dripster {
   background-color: beige; 
   border-radius: 200px;
+} 
+
+.button {
+  background-color: #b1731c; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px; 
+  border-radius: 20px;
 }
 
 </style>
